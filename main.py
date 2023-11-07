@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 env = ConnectFour('rgb_array')
 state, info = env.reset()
 
+n_iterations = st.slider('MCTS Search Iterations', 1, 1000, 800)
+
 if 'terminated' not in st.session_state:
     st.session_state['terminated'] = False
     terminated = False
@@ -28,7 +30,8 @@ else:
 
 # Select Player
 if 'player' not in st.session_state:
-    player = st.text_input('Player')
+    options = [1, 2]
+    player = st.selectbox('Select Player', options, index=None)
 
     if not player:
         st.warning('Please input a player')
@@ -39,7 +42,6 @@ if 'player' not in st.session_state:
 else:
     player = st.session_state['player']
 
-n_iterations = 1000
 c = np.sqrt(2)
 steps = 0
 
@@ -52,8 +54,9 @@ if not terminated:
         possible_actions = env.get_possible_actions()
 
         with col1:
-            action = st.text_input('Action')
-            if not action:
+            action = st.selectbox('Select action (=column index)', possible_actions, index=None)
+
+            if not action and action != 0:
                 with col2:
                     fig, ax = plt.subplots()
                     ax.imshow(env.board_state)
@@ -89,6 +92,7 @@ if not terminated:
 if terminated:
     if reward == 1 or reward == 2:
         st.text(f'Game won by Player: {reward}')
+        st.balloons()
     else:
         st.text('Draw')
 else:
