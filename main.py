@@ -73,6 +73,8 @@ if not terminated:
 
         with col1:
             st.text(f'Action by MCTS {action}')
+        
+        st.graphviz_chart(mcts.render_graph())
 
     next_state, reward, terminated, truncated, info = env.step(action)
     st.session_state['board_state'] = env.board_state

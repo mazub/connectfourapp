@@ -3,6 +3,7 @@ import copy
 import random
 import numpy as np
 from connectfour import ConnectFour
+import graphviz
 
 class MCTS:
 
@@ -146,3 +147,18 @@ class MCTS:
                 action = int(child_node.tag)
 
         return action
+    
+    def render_graph(self): # Similar to to_graphviz of treelib, but it returns a graph object instead of writing a file: https://treelib.readthedocs.io/en/latest/_modules/treelib/tree.html#Tree
+        graph = graphviz.Digraph()
+
+        if self.search_tree.nodes:
+            for n in self.search_tree.expand_tree(mode=self.search_tree.WIDTH):
+                nid = self.search_tree[n].identifier
+                label = self.search_tree[n].tag
+                graph.node(nid, label)
+
+                for c in self.search_tree.children(nid):
+                    cid = c.identifier
+                    graph.edge(nid, cid)
+                    
+        return graph
